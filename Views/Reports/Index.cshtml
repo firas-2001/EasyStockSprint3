@@ -1,0 +1,121 @@
+@model EasyStock.Models.ViewModels.ReportIndexViewModel
+@using EasyStock.Models
+@{
+    ViewData["Title"] = "Rapports et exports";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1>Rapports et exports</h1>
+        <p class="text-muted mb-0">Exportez l'inventaire, les alertes de stock faible, l'historique des mouvements et les réapprovisionnements.</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="quick-card h-100">
+            <h3>Inventaire global</h3>
+            <p>Vue synthétique du stock actuel par équipement, catégorie et fournisseur.</p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-primary" asp-action="ExportInventory" asp-route-format="csv">CSV</a>
+                <a class="btn btn-primary" asp-action="ExportInventory" asp-route-format="excel">Excel</a>
+                <a class="btn btn-primary" asp-action="ExportInventory" asp-route-format="pdf">PDF</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="quick-card h-100">
+            <h3>Rapport stock faible</h3>
+            <p>Liste priorisée des équipements dont le stock disponible est au niveau du seuil ou en dessous.</p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-primary" asp-action="ExportLowStock" asp-route-format="csv">CSV</a>
+                <a class="btn btn-primary" asp-action="ExportLowStock" asp-route-format="excel">Excel</a>
+                <a class="btn btn-primary" asp-action="ExportLowStock" asp-route-format="pdf">PDF</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-4">
+        <h3 class="mb-3">Exporter l'historique des mouvements</h3>
+        <form asp-action="ExportMovements" method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Date de début</label>
+                <input class="form-control" type="date" asp-for="StartDate" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Date de fin</label>
+                <input class="form-control" type="date" asp-for="EndDate" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Équipement</label>
+                <select class="form-select" asp-for="ArticleId" asp-items="ViewBag.ArticleId">
+                    <option value="">Tous les équipements</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Type</label>
+                <select class="form-select" asp-for="TypeMouvement">
+                    <option value="">Tous</option>
+                    @foreach (var type in (IEnumerable<string>)ViewBag.TypeMouvements)
+                    {
+                        <option value="@type">@MouvementType.ToDisplay(type)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-8">
+                <label class="form-label">Utilisateur</label>
+                <input class="form-control" asp-for="Username" placeholder="Compte ayant saisi le mouvement" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Format</label>
+                <select class="form-select" asp-for="Format">
+                    <option value="csv">CSV</option>
+                    <option value="excel">Excel</option>
+                    <option value="pdf">PDF</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" type="submit">Exporter</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <h3 class="mb-3">Exporter l'historique des réapprovisionnements</h3>
+        <form asp-action="ExportReplenishments" method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Date de début</label>
+                <input class="form-control" type="date" asp-for="StartDate" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Date de fin</label>
+                <input class="form-control" type="date" asp-for="EndDate" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Équipement</label>
+                <select class="form-select" asp-for="ArticleId" asp-items="ViewBag.ArticleId">
+                    <option value="">Tous les équipements</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Format</label>
+                <select class="form-select" asp-for="Format">
+                    <option value="csv">CSV</option>
+                    <option value="excel">Excel</option>
+                    <option value="pdf">PDF</option>
+                </select>
+            </div>
+            <div class="col-md-10">
+                <label class="form-label">Utilisateur</label>
+                <input class="form-control" asp-for="Username" placeholder="Gestionnaire ou opérateur à l'origine du réapprovisionnement" />
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100" type="submit">Exporter</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+@model EasyStock.Models.ViewModels.StockMovementHistoryViewModel
+@{
+    ViewData["Title"] = "Historique des réapprovisionnements";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1>Historique des réapprovisionnements</h1>
+        <p class="text-muted mb-0">Consultez les entrées liées aux réapprovisionnements et les références fournisseurs associées.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">Retour à l'historique global</a>
+</div>
+
+<form method="get" class="card p-3 shadow-sm border-0 mb-3">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Date de début</label>
+            <input class="form-control" type="date" name="startDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Date de fin</label>
+            <input class="form-control" type="date" name="endDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Équipement</label>
+            <select class="form-select" name="articleId" asp-items="ViewBag.ArticleId">
+                <option value="">Tous les équipements</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Utilisateur</label>
+            <input class="form-control" name="username" value="@Model.Username" placeholder="Gestionnaire ou opérateur" />
+        </div>
+        <div class="col-md-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Filtrer</button>
+            <a class="btn btn-secondary" asp-action="Replenishments">Reset</a>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Référence</th>
+            <th>Date</th>
+            <th>Équipement</th>
+            <th>Fournisseur</th>
+            <th>Quantité</th>
+            <th>Stock avant</th>
+            <th>Stock après</th>
+            <th>Utilisateur</th>
+            <th>Motif</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (!Model.Items.Any())
+    {
+        <tr>
+            <td colspan="9" class="text-center text-muted">Aucun réapprovisionnement ne correspond aux filtres sélectionnés.</td>
+        </tr>
+    }
+    else
+    {
+        foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.ReferenceCode</td>
+                <td>@item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@item.Article?.Name</td>
+                <td>@item.Article?.Fournisseur?.Nom</td>
+                <td>@item.Quantite</td>
+                <td>@item.StockAvant</td>
+                <td>@item.StockApres</td>
+                <td>@item.CreatedBy</td>
+                <td>@item.Motif</td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>

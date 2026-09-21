@@ -1,0 +1,91 @@
+@model EasyStock.Models.ViewModels.StockMovementHistoryViewModel
+@using EasyStock.Models
+@{
+    ViewData["Title"] = "Historique des mouvements";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1>Historique des mouvements</h1>
+        <p class="text-muted mb-0">Filtrez les entrées, sorties et retours par période, équipement, type ou utilisateur.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Replenishments">Historique des réapprovisionnements</a>
+</div>
+
+<form method="get" class="card p-3 shadow-sm border-0 mb-3">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Date de début</label>
+            <input class="form-control" type="date" name="startDate" value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Date de fin</label>
+            <input class="form-control" type="date" name="endDate" value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Équipement</label>
+            <select class="form-select" name="articleId" asp-items="ViewBag.ArticleId">
+                <option value="">Tous les équipements</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Type</label>
+            <select class="form-select" name="typeMouvement">
+                <option value="">Tous</option>
+                @foreach (var type in (IEnumerable<string>)ViewBag.TypeMouvements)
+                {
+                    <option value="@type" selected="@(Model.TypeMouvement == type)">@MouvementType.ToDisplay(type)</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Utilisateur</label>
+            <input class="form-control" name="username" value="@Model.Username" placeholder="Nom du compte ou créateur du mouvement" />
+        </div>
+        <div class="col-md-6 d-flex gap-2">
+            <button class="btn btn-primary w-100" type="submit">Filtrer</button>
+            <a class="btn btn-secondary" asp-action="Index">Reset</a>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Référence</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Équipement</th>
+            <th>Quantité</th>
+            <th>Stock avant</th>
+            <th>Stock après</th>
+            <th>Utilisateur</th>
+            <th>Référence externe</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (!Model.Items.Any())
+    {
+        <tr>
+            <td colspan="9" class="text-center text-muted">Aucun mouvement ne correspond aux filtres sélectionnés.</td>
+        </tr>
+    }
+    else
+    {
+        foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.ReferenceCode</td>
+                <td>@item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@MouvementType.ToDisplay(item.TypeMouvement)</td>
+                <td>@item.Article?.Name</td>
+                <td>@item.Quantite</td>
+                <td>@item.StockAvant</td>
+                <td>@item.StockApres</td>
+                <td>@item.CreatedBy</td>
+                <td>@item.ReferenceExterne</td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>

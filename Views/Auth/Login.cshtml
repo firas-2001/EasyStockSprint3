@@ -1,0 +1,57 @@
+@model EasyStock.Models.ViewModels.LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connexion - EasyStock Sprint 3</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="login-wrap">
+        <section class="login-stage">
+            <aside class="login-promo">
+                <span class="promo-chip">EasyStock 2026</span>
+                <h1>Gestion sécurisée de l'inventaire, des mouvements et des rapports</h1>
+                <p>Le Sprint 3 ajoute les mouvements de stock, l'historique filtrable, les alertes visuelles et les exports opérationnels tout en conservant les modules des Sprints 1 et 2.</p>
+                <ul class="promo-list">
+                    <li>Authentification par session et rôles différenciés</li>
+                    <li>Entrées, sorties et retours de stock</li>
+                    <li>Historique, rapports et exports CSV / Excel / PDF</li>
+                </ul>
+            </aside>
+
+            <div class="login-box">
+                <span class="brand-chip">Sprint 3</span>
+                <h2>Connexion</h2>
+                <p class="login-subtitle">Utilisez un compte autorisé pour accéder à EasyStock.</p>
+
+                <form asp-controller="Auth" asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="Username" placeholder="Nom d'utilisateur" />
+                    <span asp-validation-for="Username" class="text-danger small"></span>
+
+                    <input asp-for="Password" placeholder="Mot de passe" />
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+
+                    <input asp-for="ReturnUrl" type="hidden" />
+
+                    <button type="submit">Se connecter</button>
+                    <div class="login-error">@ViewData["ErrorMessage"]</div>
+                </form>
+
+                <p class="login-note">Comptes de démonstration: admin, gestionnaire, operateur.</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

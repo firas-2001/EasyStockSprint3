@@ -1,0 +1,13 @@
+@model EasyStock.Models.Fournisseur
+@{
+    ViewData["Title"] = "Supprimer un fournisseur";
+}
+
+<h1>Supprimer un fournisseur</h1>
+<p>Confirmer la suppression de <strong>@Model.Nom</strong> ?</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="FournisseurId" />
+    <button type="submit" class="btn btn-danger">Supprimer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>

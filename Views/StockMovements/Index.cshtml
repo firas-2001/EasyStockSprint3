@@ -1,0 +1,75 @@
+@model IEnumerable<EasyStock.Models.MouvementStock>
+@using EasyStock.Models
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Mouvements de stock";
+    var role = Context.Session.GetString("Role") ?? string.Empty;
+    var canViewHistory = string.Equals(role, "Gestionnaire", StringComparison.OrdinalIgnoreCase);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1>Mouvements de stock</h1>
+        <p class="text-muted mb-0">Enregistrez les entrées, sorties et retours. Les mouvements récents sont historisés automatiquement.</p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        @if (canViewHistory)
+        {
+            <a class="btn btn-outline-secondary" asp-controller="History" asp-action="Index">Voir l'historique</a>
+        }
+        <a class="btn btn-primary" asp-action="Entry">Entrée</a>
+        <a class="btn btn-primary" asp-action="Output">Sortie</a>
+        <a class="btn btn-primary" asp-action="Return">Retour</a>
+    </div>
+</div>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Référence</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Équipement</th>
+            <th>Stock avant</th>
+            <th>Quantité</th>
+            <th>Stock après</th>
+            <th>Utilisateur</th>
+            <th>Statut</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (!Model.Any())
+    {
+        <tr>
+            <td colspan="9" class="text-center text-muted">Aucun mouvement de stock n'a encore été enregistré.</td>
+        </tr>
+    }
+    else
+    {
+        foreach (var item in Model)
+        {
+            var lowStock = item.Article != null && item.StockApres <= item.Article.NombreArticleMinimum;
+            <tr>
+                <td>@item.ReferenceCode</td>
+                <td>@item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                <td><span class="status-pill">@MouvementType.ToDisplay(item.TypeMouvement)</span></td>
+                <td>@item.Article?.Name</td>
+                <td>@item.StockAvant</td>
+                <td>@item.Quantite</td>
+                <td>@item.StockApres</td>
+                <td>@item.CreatedBy</td>
+                <td>
+                    @if (lowStock)
+                    {
+                        <span class="status-pill status-pill-warning">Stock faible</span>
+                    }
+                    else
+                    {
+                        <span class="status-pill status-pill-success">Normal</span>
+                    }
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>

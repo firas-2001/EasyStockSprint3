@@ -1,0 +1,24 @@
+﻿@model EasyStock.Models.User
+@{
+    ViewData["Title"] = "Supprimer un utilisateur";
+}
+
+<h1>Supprimer un utilisateur</h1>
+<p>Confirmez-vous la suppression de ce compte ?</p>
+
+<div class="card p-4 shadow-sm border-0 mb-3">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Nom d'utilisateur</dt>
+        <dd class="col-sm-9">@Model.Username</dd>
+        <dt class="col-sm-3">Courriel</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+        <dt class="col-sm-3">Rôle</dt>
+        <dd class="col-sm-9">@Model.Role?.RoleName</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete" method="post" class="d-flex gap-2">
+    <input type="hidden" asp-for="UserId" />
+    <button type="submit" class="btn btn-danger">Supprimer</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Annuler</a>
+</form>

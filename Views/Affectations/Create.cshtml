@@ -1,0 +1,76 @@
+﻿@model EasyStock.Models.ViewModels.AffectationCreateViewModel
+@{
+    ViewData["Title"] = "Nouvelle affectation";
+    var searchField = ViewBag.SearchField as string ?? Model.SearchField;
+    var searchTerm = ViewBag.SearchTerm as string ?? Model.SearchTerm;
+    var hasEmployes = ViewBag.HasEmployes as bool? ?? false;
+}
+
+<h1>Nouvelle affectation</h1>
+
+<form method="get" class="card p-4 shadow-sm border-0 mb-3">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Filtrer l'employé par</label>
+            <select class="form-select" name="searchField">
+                <option value="Id" selected="@(searchField == "Id")">ID employé</option>
+                <option value="Nom" selected="@(searchField == "Nom")">Nom</option>
+                <option value="Prenom" selected="@(searchField == "Prenom")">Prénom</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Valeur</label>
+            <input class="form-control" name="searchTerm" value="@searchTerm" placeholder="Ex: 12, Tremblay, Nadia" />
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+            <a asp-action="Create" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
+<form asp-action="Create" method="post" class="card p-4 shadow-sm border-0">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <input asp-for="SearchField" type="hidden" value="@searchField" />
+    <input asp-for="SearchTerm" type="hidden" value="@searchTerm" />
+
+    <div class="mb-3">
+        <label asp-for="ArticleId" class="form-label"></label>
+        <select asp-for="ArticleId" asp-items="ViewBag.ArticleId" class="form-select"></select>
+        <span asp-validation-for="ArticleId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EmployeId" class="form-label"></label>
+        <select asp-for="EmployeId" asp-items="ViewBag.EmployeId" class="form-select"></select>
+        <span asp-validation-for="EmployeId" class="text-danger"></span>
+        @if (!hasEmployes)
+        {
+            <div class="form-text text-danger">Aucun employé actif ne correspond au filtre actuel.</div>
+        }
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EtatSortie" class="form-label"></label>
+        <select asp-for="EtatSortie" class="form-select">
+            <option value="Fonctionnel">Fonctionnel</option>
+            <option value="Défectueux">Défectueux</option>
+        </select>
+        <span asp-validation-for="EtatSortie" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Affecter</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Annuler</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

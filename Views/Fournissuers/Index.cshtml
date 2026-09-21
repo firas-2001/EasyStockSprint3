@@ -1,0 +1,39 @@
+﻿@model IEnumerable<EasyStock.Models.Fournisseur>
+@{
+    ViewData["Title"] = "Fournisseurs";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Fournisseurs</h1>
+    <a class="btn btn-primary" asp-action="Create">Ajouter un fournisseur</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Adresse</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Nom</td>
+            <td>@item.ContactEmail</td>
+            <td>@item.PhoneNumber</td>
+            <td>@item.Address</td>
+            <td>
+                <a asp-action="Détails" asp-route-id="@item.FournisseurId">Détails</a> |
+                <a asp-action="Edit" asp-route-id="@item.FournisseurId">Modifier</a> |
+                <a asp-action="Delete" asp-route-id="@item.FournisseurId">Supprimer</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+

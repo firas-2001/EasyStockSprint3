@@ -1,0 +1,69 @@
+﻿@model IEnumerable<EasyStock.Models.Affectation>
+@{
+    ViewData["Title"] = "Historique des affectations";
+    var searchField = ViewBag.SearchField as string ?? "Nom";
+    var searchTerm = ViewBag.SearchTerm as string ?? string.Empty;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1>Historique des affectations</h1>
+        <p class="text-muted mb-0">Suivi complet des affectations et retours par employé.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">Retour aux affectations actives</a>
+</div>
+
+<form method="get" class="card p-3 shadow-sm border-0 mb-3">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Filtrer par</label>
+            <select class="form-select" name="searchField">
+                <option value="Id" selected="@(searchField == "Id")">ID employé</option>
+                <option value="Nom" selected="@(searchField == "Nom")">Nom</option>
+                <option value="Prenom" selected="@(searchField == "Prenom")">Prénom</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Valeur</label>
+            <input class="form-control" name="searchTerm" value="@searchTerm" placeholder="Rechercher un employé" />
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-100">Rechercher</button>
+            <a asp-action="History" class="btn btn-outline-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Référence</th>
+            <th>Équipement</th>
+            <th>ID employé</th>
+            <th>Employé</th>
+            <th>Affecté le</th>
+            <th>Retourné le</th>
+            <th>État sortie</th>
+            <th>État retour</th>
+            <th>Statut</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.ReferenceCode</td>
+            <td>@item.Article?.Name</td>
+            <td>@item.EmployeId</td>
+            <td>@item.Employe?.Prenom @item.Employe?.Nom</td>
+            <td>@item.AssignedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+            <td>@(item.ReturnedAt.HasValue ? item.ReturnedAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm") : "-")</td>
+            <td>@item.EtatSortie</td>
+            <td>@(string.IsNullOrWhiteSpace(item.EtatRetour) ? "-" : item.EtatRetour)</td>
+            <td>@(item.IsActive ? "Affecté" : "Retourné")</td>
+            <td><a asp-action="Details" asp-route-id="@item.AffectationId">Détails</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

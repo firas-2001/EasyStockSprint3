@@ -1,0 +1,16 @@
+@model EasyStock.Models.Article
+@{
+    ViewData["Title"] = "Supprimer un équipement";
+}
+
+<h1>Supprimer un équipement</h1>
+<p>Confirmer la suppression de <strong>@Model.Name</strong> ?</p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="ArticleId" />
+    <button type="submit" class="btn btn-danger">Supprimer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+
+
+

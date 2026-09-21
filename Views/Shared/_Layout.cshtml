@@ -1,0 +1,92 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var session = HttpContextAccessor.HttpContext?.Session;
+    var isAuthenticated = session?.GetString("IsAuthenticated") == "true";
+    var username = session?.GetString("Username") ?? string.Empty;
+    var role = session?.GetString("Role") ?? string.Empty;
+    var isAdmin = string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase);
+    var isManager = string.Equals(role, "Gestionnaire", StringComparison.OrdinalIgnoreCase);
+    var isOperator = string.Equals(role, "Operateur", StringComparison.OrdinalIgnoreCase);
+    var canOperate = isManager || isOperator;
+    var canSupervise = isManager;
+}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EasyStock</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="app-shell">
+    <div class="bg-orb bg-orb-a"></div>
+    <div class="bg-orb bg-orb-b"></div>
+
+    @if (isAuthenticated)
+    {
+        <header class="sticky-top px-2 px-md-3 pt-2 pt-md-3">
+            <nav class="navbar navbar-expand-lg app-nav">
+                <div class="container-fluid px-2 px-md-3">
+                    <a class="navbar-brand brand-mark" asp-controller="Home" asp-action="Accueil">EasyStock</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="mainNav">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 nav-pills-modern">
+                            @if (canOperate)
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Articles" asp-action="Index">Équipements</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Categories" asp-action="Index">Catégories</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Fournissuers" asp-action="Index">Fournisseurs</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Affectations" asp-action="Index">Affectations</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="StockMovements" asp-action="Index">Mouvements de stock</a></li>
+                            }
+                            @if (canSupervise)
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="History" asp-action="Index">Historique</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Reports" asp-action="Index">Rapports / Exports</a></li>
+                            }
+                            @if (isAdmin)
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="Users" asp-action="Index">Utilisateurs</a></li>
+                            }
+                        </ul>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge rounded-pill text-bg-light">@username (@role)</span>
+                            <a class="btn btn-ghost-danger btn-sm" asp-controller="Auth" asp-action="Logout">Déconnexion</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+    }
+
+    <div class="container-xl page-content px-3 px-md-4">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success app-alert">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger app-alert">@TempData["ErrorMessage"]</div>
+        }
+
+        <main role="main" class="pb-4">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="app-footer mt-auto">
+        <div class="container-xl d-flex justify-content-center">
+            <span>EasyStock © 2026</span>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

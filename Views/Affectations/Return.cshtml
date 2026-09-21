@@ -1,0 +1,57 @@
+﻿@model EasyStock.Models.ViewModels.AffectationReturnViewModel
+@{
+    ViewData["Title"] = "Désaffecter un équipement";
+    var affectation = ViewBag.Affectation as EasyStock.Models.Affectation;
+}
+
+<h1>Désaffecter un équipement</h1>
+
+@if (affectation != null)
+{
+    <div class="card p-4 shadow-sm border-0 mb-3">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Référence</dt>
+            <dd class="col-sm-9">@affectation.ReferenceCode</dd>
+            <dt class="col-sm-3">Équipement</dt>
+            <dd class="col-sm-9">@affectation.Article?.Name</dd>
+            <dt class="col-sm-3">ID employé</dt>
+            <dd class="col-sm-9">@affectation.EmployeId</dd>
+            <dt class="col-sm-3">Employé</dt>
+            <dd class="col-sm-9">@affectation.Employe?.Prenom @affectation.Employe?.Nom</dd>
+            <dt class="col-sm-3">Département</dt>
+            <dd class="col-sm-9">@affectation.Employe?.Departement</dd>
+            <dt class="col-sm-3">État à l'affectation</dt>
+            <dd class="col-sm-9">@affectation.EtatSortie</dd>
+            <dt class="col-sm-3">Affecté le</dt>
+            <dd class="col-sm-9">@affectation.AssignedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</dd>
+        </dl>
+    </div>
+}
+
+<form asp-action="Return" method="post" class="card p-4 shadow-sm border-0">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label asp-for="EtatRetour" class="form-label"></label>
+        <select asp-for="EtatRetour" class="form-select">
+            <option value="Fonctionnel">Fonctionnel</option>
+            <option value="Défectueux">Défectueux</option>
+        </select>
+        <span asp-validation-for="EtatRetour" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger">Confirmer le retour</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Annuler</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

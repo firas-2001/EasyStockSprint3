@@ -1,0 +1,37 @@
+﻿@model IEnumerable<EasyStock.Models.User>
+@{
+    ViewData["Title"] = "Utilisateurs";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Utilisateurs</h1>
+    <a class="btn btn-primary" asp-action="Create">Créer un utilisateur</a>
+</div>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Nom d'utilisateur</th>
+            <th>Courriel</th>
+            <th>Rôle</th>
+            <th>Créé le</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Username</td>
+            <td>@item.Email</td>
+            <td>@item.Role?.RoleName</td>
+            <td>@item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.UserId">Détails</a> |
+                <a asp-action="Edit" asp-route-id="@item.UserId">Modifier</a> |
+                <a asp-action="Delete" asp-route-id="@item.UserId">Supprimer</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

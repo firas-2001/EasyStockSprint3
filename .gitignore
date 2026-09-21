@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+.idea/
+.vscode/*.log
+*.user
+*.suo
+*.cache
+TestResults/
+coverage*.xml
+
+run-sprint3.out
+run-sprint3.err

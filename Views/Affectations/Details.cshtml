@@ -1,0 +1,45 @@
+﻿@model EasyStock.Models.Affectation
+@{
+    ViewData["Title"] = "Détails affectation";
+}
+
+<h1>Détails de l'affectation</h1>
+
+<div class="card p-4 shadow-sm border-0">
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Référence</dt>
+        <dd class="col-sm-9">@Model.ReferenceCode</dd>
+        <dt class="col-sm-3">Équipement</dt>
+        <dd class="col-sm-9">@Model.Article?.Name</dd>
+        <dt class="col-sm-3">ID employé</dt>
+        <dd class="col-sm-9">@Model.EmployeId</dd>
+        <dt class="col-sm-3">Employé</dt>
+        <dd class="col-sm-9">@Model.Employe?.Prenom @Model.Employe?.Nom</dd>
+        <dt class="col-sm-3">Courriel</dt>
+        <dd class="col-sm-9">@Model.Employe?.EmailProfessionnel</dd>
+        <dt class="col-sm-3">Département</dt>
+        <dd class="col-sm-9">@Model.Employe?.Departement</dd>
+        <dt class="col-sm-3">Poste</dt>
+        <dd class="col-sm-9">@Model.Employe?.Poste</dd>
+        <dt class="col-sm-3">État à l'affectation</dt>
+        <dd class="col-sm-9">@Model.EtatSortie</dd>
+        <dt class="col-sm-3">État au retour</dt>
+        <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.EtatRetour) ? "-" : Model.EtatRetour)</dd>
+        <dt class="col-sm-3">Date d'affectation</dt>
+        <dd class="col-sm-9">@Model.AssignedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</dd>
+        <dt class="col-sm-3">Date de retour</dt>
+        <dd class="col-sm-9">@(Model.ReturnedAt.HasValue ? Model.ReturnedAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm") : "-")</dd>
+        <dt class="col-sm-3">Statut</dt>
+        <dd class="col-sm-9">@(Model.IsActive ? "Affecté" : "Retourné")</dd>
+        <dt class="col-sm-3">Notes</dt>
+        <dd class="col-sm-9">@(string.IsNullOrWhiteSpace(Model.Notes) ? "-" : Model.Notes)</dd>
+    </dl>
+</div>
+
+<div class="mt-3 d-flex gap-2">
+    @if (Model.IsActive)
+    {
+        <a asp-action="Return" asp-route-id="@Model.AffectationId" class="btn btn-danger">Désaffecter</a>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary">Retour</a>
+</div>

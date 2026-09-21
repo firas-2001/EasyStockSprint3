@@ -1,0 +1,55 @@
+@model IEnumerable<EasyStock.Models.Article>
+@{
+    ViewData["Title"] = "Équipements";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h1>Équipements</h1>
+        <p class="text-muted mb-0">La liste met en évidence les équipements dont le stock est au seuil minimal ou en dessous.</p>
+    </div>
+    <a class="btn btn-primary" asp-action="Create">Ajouter un équipement</a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Catégorie</th>
+            <th>Fournisseur</th>
+            <th>Stock</th>
+            <th>Seuil min.</th>
+            <th>Statut</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        var lowStock = item.NombreArticleActuel <= item.NombreArticleMinimum;
+        <tr class="@(lowStock ? "low-stock-row" : string.Empty)">
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+            <td>@item.Category?.Name</td>
+            <td>@item.Fournisseur?.Nom</td>
+            <td>@item.NombreArticleActuel</td>
+            <td>@item.NombreArticleMinimum</td>
+            <td>
+                @if (lowStock)
+                {
+                    <span class="status-pill status-pill-warning">Stock faible</span>
+                }
+                else
+                {
+                    <span class="status-pill status-pill-success">Stock normal</span>
+                }
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ArticleId">Modifier</a> |
+                <a asp-action="Delete" asp-route-id="@item.ArticleId">Supprimer</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

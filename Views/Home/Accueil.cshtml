@@ -1,0 +1,99 @@
+@using Microsoft.AspNetCore.Http
+@{
+    ViewData["Title"] = "Accueil";
+    var role = Context.Session.GetString("Role") ?? string.Empty;
+    var isAdmin = string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase);
+    var isManager = string.Equals(role, "Gestionnaire", StringComparison.OrdinalIgnoreCase);
+    var isOperator = string.Equals(role, "Operateur", StringComparison.OrdinalIgnoreCase);
+    var canOperate = isManager || isOperator;
+    var canSupervise = isManager;
+}
+
+<section class="welcome-hero mb-4">
+    <div class="welcome-content">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-7">
+                <h1 class="mb-2">Bienvenue dans EasyStock Sprint 3</h1>
+                <p class="mb-3 opacity-75">
+                    Cette version ajoute les mouvements de stock, l'historique filtrable, les alertes de stock faible et les rapports exportables tout en conservant les modules des Sprints 1 et 2.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    @if (canOperate)
+                    {
+                        <a class="btn btn-light" asp-controller="StockMovements" asp-action="Index">Mouvements de stock</a>
+                    }
+                    @if (canSupervise)
+                    {
+                        <a class="btn btn-outline-light" asp-controller="Reports" asp-action="Index">Rapports et exports</a>
+                        <a class="btn btn-outline-light" asp-controller="History" asp-action="Index">Historique</a>
+                    }
+                    @if (isAdmin)
+                    {
+                        <a class="btn btn-outline-light" asp-controller="Users" asp-action="Index">Voir les utilisateurs</a>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="kpi-grid">
+                    <article class="kpi-card">
+                        <div class="kpi-title">Version active</div>
+                        <div class="kpi-value">Sprint 3</div>
+                    </article>
+                    <article class="kpi-card">
+                        <div class="kpi-title">Mouvements</div>
+                        <div class="kpi-value">Entrée / Sortie / Retour</div>
+                    </article>
+                    <article class="kpi-card">
+                        <div class="kpi-title">Historique</div>
+                        <div class="kpi-value">Filtrable</div>
+                    </article>
+                    <article class="kpi-card">
+                        <div class="kpi-title">Exports</div>
+                        <div class="kpi-value">CSV / Excel / PDF</div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="quick-grid">
+    @if (canOperate)
+    {
+        <article class="quick-card">
+            <h3>Opérations de stock</h3>
+            <p>Enregistrez les entrées, sorties et retours directement sur l'inventaire réel.</p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-primary" asp-controller="StockMovements" asp-action="Entry">Nouvelle entrée</a>
+                <a class="btn btn-outline-secondary" asp-controller="StockMovements" asp-action="Output">Nouvelle sortie</a>
+            </div>
+        </article>
+    }
+
+    @if (canSupervise)
+    {
+        <article class="quick-card">
+            <h3>Supervision</h3>
+            <p>Suivez l'historique, les alertes de stock faible et les réapprovisionnements.</p>
+            <div class="d-flex gap-2 flex-wrap">
+                <a class="btn btn-primary" asp-controller="History" asp-action="Index">Historique global</a>
+                <a class="btn btn-outline-secondary" asp-controller="History" asp-action="Replenishments">Réapprovisionnements</a>
+            </div>
+        </article>
+
+        <article class="quick-card">
+            <h3>Rapports</h3>
+            <p>Exportez l'inventaire et les mouvements pour le suivi opérationnel et pédagogique.</p>
+            <a class="btn btn-primary" asp-controller="Reports" asp-action="Index">Accéder aux exports</a>
+        </article>
+    }
+
+    @if (isAdmin)
+    {
+        <article class="quick-card">
+            <h3>Administration</h3>
+            <p>Le rôle administrateur est réservé à la gestion des comptes, rôles et permissions.</p>
+            <a class="btn btn-primary" asp-controller="Users" asp-action="Create">Créer un utilisateur</a>
+        </article>
+    }
+</section>
